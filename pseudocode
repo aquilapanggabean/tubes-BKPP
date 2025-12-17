@@ -1,0 +1,105 @@
+program kalkulator_ekspedisi
+kamus
+    berat, jarak, biayadasar, faktor, estimasiHari, total : real
+    layanan, estimasiOutput : string
+    kotaAsal, kotaTujuan : integer
+
+    tarifPerKg : real <- 5000.00
+    tarifPerKm : real <- 2000.00
+    kota : array of string <- ["Jakarta", "Karawang", "Bandung", "Ngawi", "Banyuwangi"]
+    posisi : array of real <- [0, 50, 150, 575, 1140]
+
+algoritma
+    output("Masukkan berat barang (kg): ")
+    input(berat)
+
+    if berat <= 0 then
+        output("ERROR: berat harus > 0")
+        return
+    endif
+
+    output("Pilih kota asal:")
+    for i <- 0 to panjang(kota) - 1 do
+        output(i + 1, ". ", kota[i])
+    endfor
+
+    output("Masukkan pilihan: ")
+    input(pilihanasal)
+
+    if pilihanasal < 1 or pilihanasal > panjang(kota) then
+        output("ERROR: kota asal tidak valid")
+        return
+    endif
+
+    kotaasalindex <- pilihanasal - 1
+
+    output("Pilih kota tujuan:")
+    for i <- 0 to panjang(kota) - 1 do
+        output(i + 1, ". ", kota[i])
+    endfor
+
+    output("Masukkan pilihan: ")
+    input(pilihantujuan)
+
+    if pilihantujuan < 1 or pilihantujuan > panjang(kota) then
+        output("ERROR: kota tujuan tidak valid")
+        return
+    endif
+
+    kotatujuanindex <- pilihantujuan - 1
+
+    if kotaasalindex = kotatujuanindex then
+        output("error: kota asal dan tujuan tidak boleh sama")
+        return
+    endif
+
+    jarak <- posisi[kotaasalindex] - posisi[kotatujuanindex]
+    if jarak < 0 then
+        jarak <- -jarak
+    endif
+
+    output("Pilih layanan:")
+    output("1. Reguler")
+    output("2. Express")
+    output("3. Cargo")
+    output("Masukkan pilihan: ")
+    input(layanan)
+
+    biayadasar <- (berat * tarifperkg) + (jarak * tarifperkm)
+
+    switch layanan
+        kasus "1":
+            faktor <- 1.0
+            estimasihari <- jarak / 300
+        kasus "2":
+            faktor <- 1.5
+            estimasihari <- jarak / 500
+        kasus "3":
+            if berat < 5 then
+                output("ERROR: cargo minimal 5 kg")
+                return
+            endif
+            faktor <- 0.8
+            estimasihari <- jarak / 200
+        kasus lainnya:
+            output("ERROR: layanan tidak valid")
+            return
+    endswitch
+
+    total <- biayadasar * faktor
+
+    if estimasihari < 1 then
+        estimasioutput <- format(estimasihari * 24, " jam")
+    else
+        estimasioutput <- format(estimasihari, " hari")
+    endif
+
+    output("Rincian pengiriman")
+    output("Asal           : ", kota[kotaasalindex])
+    output("Tujuan         : ", kota[kotatujuanindex])
+    output("Jarak          : ", format(jarak, 0), " km")
+    output("Berat          : ", format(berat, 1), " kg")
+    output("Total biaya    : rp ", format(total, 0))
+    output("Estimasi waktu : ", estimasioutput)
+
+endprogram
