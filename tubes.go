@@ -4,13 +4,13 @@ import "fmt"
 
 func main() {
 	var berat float64
-	var layanan string
+	var layanan int
 
 	// Tarif
 	tarifPerKg := 5000.0
 	tarifPerKm := 2000.0
 
-	// ArraY Kota
+	// ARRAY KOTA & NILAI POSISI
 	kota := []string{
 		"Jakarta",
 		"Karawang",
@@ -30,12 +30,16 @@ func main() {
 	fmt.Println("KALKULATOR BIAYA PENGIRIMAN BARANG")
 
 	// Input berat
+
 	fmt.Print("Masukkan berat barang (kg): ")
 	fmt.Scan(&berat)
-	if berat <= 0 {
+
+	for berat <= 0 {
 		fmt.Println("ERROR: Berat harus > 0")
-		return
+		fmt.Print("Masukkan berat barang (kg): ")
+		fmt.Scan(&berat)
 	}
+
 	// Pilih kota asal
 	fmt.Println("\nPilih Kota Asal:")
 	for i, k := range kota {
@@ -46,9 +50,10 @@ func main() {
 	fmt.Print("Masukkan pilihan: ")
 	fmt.Scan(&KotaAsal)
 
-	if KotaAsal < 1 || KotaAsal > len(kota) {
+	for KotaAsal < 1 || KotaAsal > len(kota) {
 		fmt.Println("ERROR: Kota asal tidak valid")
-		return
+		fmt.Print("Masukkan pilihan: ")
+		fmt.Scan(&KotaAsal)
 	}
 	KotaAsal--
 
@@ -63,16 +68,13 @@ func main() {
 	fmt.Print("Masukkan pilihan: ")
 	fmt.Scan(&KotaTujuan)
 
-	if KotaTujuan < 1 || KotaTujuan > len(kota) {
-		fmt.Println("ERROR: Kota tujuan tidak valid")
-		return
+	for KotaTujuan < 1 || KotaTujuan > len(kota) || KotaAsal == KotaTujuan-1 {
+		fmt.Println("ERROR: Kota tujuan tidak valid atau sama dengan kota asal")
+		fmt.Print("Masukkan pilihan: ")
+		fmt.Scan(&KotaTujuan)
+
 	}
 	KotaTujuan--
-
-	if KotaAsal == KotaTujuan {
-		fmt.Println("ERROR: Kota asal dan tujuan tidak boleh sama")
-		return
-	}
 
 	// Hitung Jarak
 	jarak := posisi[KotaAsal] - posisi[KotaTujuan]
@@ -90,26 +92,29 @@ func main() {
 
 	biayaDasar := (berat * tarifPerKg) + (jarak * tarifPerKm)
 
-	var faktor float64
-	var estimasiHari float64
+	var faktor, estimasiHari float64
+
+	for layanan < 1 || layanan > 3 || (layanan == 3 && berat < 5) {
+		if layanan == 3 && berat < 5 {
+			fmt.Println("ERROR: Cargo minimal 5 kg")
+		} else {
+			fmt.Println("ERROR: Layanan tidak valid")
+		}
+
+		fmt.Print("Masukkan pilihan: ")
+		fmt.Scan(&layanan)
+	}
 
 	switch layanan {
-	case "1":
+	case 1:
 		faktor = 1.0
 		estimasiHari = jarak / 300
-	case "2":
+	case 2:
 		faktor = 1.5
 		estimasiHari = jarak / 500
-	case "3":
-		if berat < 5 {
-			fmt.Println("ERROR: Cargo minimal 5 kg")
-			return
-		}
+	case 3:
 		faktor = 0.8
 		estimasiHari = jarak / 200
-	default:
-		fmt.Println("ERROR: Layanan tidak valid")
-		return
 	}
 
 	total := biayaDasar * faktor
