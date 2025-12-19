@@ -16,11 +16,11 @@ algoritma
     output("Masukkan berat barang (kg): ")
     input(berat)
 
-    if berat <= 0 do
+    while berat <= 0 do
         output("ERROR: Berat harus > 0")
         output("Masukkan berat barang (kg): ")
         input(berat)
-    endif
+    endwhile
 
     output("Pilih kota asal:")
     for i <- 0 to length(kota) - 1 do
@@ -30,11 +30,11 @@ algoritma
     output("Masukkan pilihan: ")
     input(kotaAsal)
 
-    if kotaAsal < 1 or kotaAsal > length(kota) do
+    while kotaAsal < 1 or kotaAsal > length(kota) do
         output("ERROR: Kota asal tidak valid")
         output("Masukkan pilihan: ")
         input(kotaAsal)
-    endif
+    endwhile
 
     kotaAsal <- kotaAsal - 1
 
@@ -46,11 +46,13 @@ algoritma
     output("Masukkan pilihan: ")
     input(kotaTujuan)
 
-    if kotaTujuan < 1 or kotaTujuan > length(kota) or kotaTujuan - 1 = kotaAsal do
+    while kotaTujuan < 1 
+          or kotaTujuan > length(kota) 
+          or kotaTujuan - 1 = kotaAsal do
         output("ERROR: Kota tujuan tidak valid atau sama dengan kota asal")
         output("Masukkan pilihan: ")
         input(kotaTujuan)
-    endif
+    endwhile
 
     kotaTujuan <- kotaTujuan - 1
 
@@ -66,7 +68,9 @@ algoritma
     output("Masukkan pilihan: ")
     input(layanan)
 
-    if layanan < 1 or layanan > 3 or (layanan = 3 and berat < 5) do
+    while layanan < 1 
+          or layanan > 3 
+          or (layanan = 3 and berat < 5) do
         if layanan = 3 and berat < 5 then
             output("ERROR: Cargo minimal 5 kg")
         else
@@ -74,7 +78,7 @@ algoritma
         endif
         output("Masukkan pilihan: ")
         input(layanan)
-    endif
+    endwhile
 
     biayaDasar <- (berat * tarifPerKg) + (jarak * tarifPerKm)
 
