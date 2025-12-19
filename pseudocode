@@ -2,12 +2,13 @@ program kalkulator_ekspedisi
 
 kamus
     berat, jarak, biayaDasar, faktor, estimasiHari, total : real
-    layanan, estimasiOutput : string
-    pilihanAsal, pilihanTujuan : integer
-    indeksKotaAsal, indeksKotaTujuan : integer
+    estimasiOutput : string
+    layanan : integer
+    kotaAsal, kotaTujuan : integer
 
-    tarifPerKg : real <- 5000.00
-    tarifPerKm : real <- 2000.00
+    tarifPerKg : real <- 5000.0
+    tarifPerKm : real <- 2000.0
+
     kota : array of string <- ["Jakarta", "Karawang", "Bandung", "Ngawi", "Banyuwangi"]
     posisi : array of real <- [0, 50, 150, 575, 1140]
 
@@ -15,9 +16,10 @@ algoritma
     output("Masukkan berat barang (kg): ")
     input(berat)
 
-    if berat <= 0 then
-        output("ERROR: berat harus > 0")
-        return
+    if berat <= 0 do
+        output("ERROR: Berat harus > 0")
+        output("Masukkan berat barang (kg): ")
+        input(berat)
     endif
 
     output("Pilih kota asal:")
@@ -28,12 +30,13 @@ algoritma
     output("Masukkan pilihan: ")
     input(kotaAsal)
 
-    if pilihanAsal < 1 or pilihanAsal > length(kota) then
-        output("ERROR: kota asal tidak valid")
-        return
+    if kotaAsal < 1 or kotaAsal > length(kota) do
+        output("ERROR: Kota asal tidak valid")
+        output("Masukkan pilihan: ")
+        input(kotaAsal)
     endif
 
-    indeksKotaAsal <- pilihanAsal - 1
+    kotaAsal <- kotaAsal - 1
 
     output("Pilih kota tujuan:")
     for i <- 0 to length(kota) - 1 do
@@ -43,19 +46,15 @@ algoritma
     output("Masukkan pilihan: ")
     input(kotaTujuan)
 
-    if pilihanTujuan < 1 or pilihanTujuan > length(kota) then
-        output("ERROR: kota tujuan tidak valid")
-        return
+    if kotaTujuan < 1 or kotaTujuan > length(kota) or kotaTujuan - 1 = kotaAsal do
+        output("ERROR: Kota tujuan tidak valid atau sama dengan kota asal")
+        output("Masukkan pilihan: ")
+        input(kotaTujuan)
     endif
 
-    indeksKotaTujuan <- pilihanTujuan - 1
+    kotaTujuan <- kotaTujuan - 1
 
-    if indeksKotaAsal = indeksKotaTujuan then
-        output("ERROR: kota asal dan tujuan tidak boleh sama")
-        return
-    endif
-
-    jarak <- posisi[indeksKotaAsal] - posisi[indeksKotaTujuan]
+    jarak <- posisi[kotaAsal] - posisi[kotaTujuan]
     if jarak < 0 then
         jarak <- -jarak
     endif
@@ -67,41 +66,44 @@ algoritma
     output("Masukkan pilihan: ")
     input(layanan)
 
+    if layanan < 1 or layanan > 3 or (layanan = 3 and berat < 5) do
+        if layanan = 3 and berat < 5 then
+            output("ERROR: Cargo minimal 5 kg")
+        else
+            output("ERROR: Layanan tidak valid")
+        endif
+        output("Masukkan pilihan: ")
+        input(layanan)
+    endif
+
     biayaDasar <- (berat * tarifPerKg) + (jarak * tarifPerKm)
 
     switch layanan
-        case "1":
+        case 1:
             faktor <- 1.0
             estimasiHari <- jarak / 300
-        case "2":
+        case 2:
             faktor <- 1.5
             estimasiHari <- jarak / 500
-        case "3":
-            if berat < 5 then
-                output("ERROR: cargo minimal 5 kg")
-                return
-            endif
+        case 3:
             faktor <- 0.8
             estimasiHari <- jarak / 200
-        default:
-            output("ERROR: layanan tidak valid")
-            return
     endswitch
 
     total <- biayaDasar * faktor
 
     if estimasiHari < 1 then
-        estimasiOutput <- format(estimasiHari * 24, " jam")
+        estimasiOutput <- format(estimasiHari * 24, " Jam")
     else
-        estimasiOutput <- format(estimasiHari, " hari")
+        estimasiOutput <- format(estimasiHari, " Hari")
     endif
 
     output("RINCIAN PENGIRIMAN")
-    output("Asal           : ", kota[indeksKotaAsal])
-    output("Tujuan         : ", kota[indeksKotaTujuan])
+    output("Asal           : ", kota[kotaAsal])
+    output("Tujuan         : ", kota[kotaTujuan])
     output("Jarak          : ", format(jarak, 0), " km")
     output("Berat          : ", format(berat, 1), " kg")
-    output("Total biaya    : Rp ", format(total, 0))
-    output("Estimasi waktu : ", estimasiOutput)
+    output("Total Biaya    : Rp ", format(total, 0))
+    output("Estimasi Waktu : ", estimasiOutput)
 
 endprogram
